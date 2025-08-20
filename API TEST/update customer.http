@@ -1,0 +1,12 @@
+### Update a customer
+PUT http://127.0.0.1:8000/api/customers/1
+Content-Type: application/json
+Accept: application/json
+
+{
+    "type": "enterprise",
+    "name": "Tech Company SARL",
+    "country": "Paris"
+}
+
+
