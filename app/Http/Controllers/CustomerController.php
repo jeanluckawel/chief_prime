@@ -13,7 +13,8 @@ class CustomerController extends Controller
     public function index()
     {
         //
-        return response()->json(Customer::all());
+        $customers = Customer::all();
+        return view('#', compact('customers'));
     }
 
     /**
@@ -22,6 +23,7 @@ class CustomerController extends Controller
     public function create()
     {
         //
+        return view('#');
     }
 
     /**
@@ -42,21 +44,18 @@ class CustomerController extends Controller
             'idnat' => 'nullable|string|max:100',
         ]);
 
-        $customer = Customer::create($validated);
+        Customer::create($validated);
 
-        return response()->json([
-            'message' => 'Customer created successfully',
-            'data' => $customer
-        ], 201);
+        return redirect()->route('#')->with('success', 'Customer created successfully.');
     }
-
     /**
      * Display the specified resource.
      */
     public function show(Customer $customer)
     {
-        //
+        return view('#', compact('customer'));
     }
+
 
     /**
      * Show the form for editing the specified resource.
@@ -86,13 +85,8 @@ class CustomerController extends Controller
 
         $customer->update($validated);
 
-        return response()->json([
-            'success' => true,
-            'message' => 'Customer updated successfully',
-            'data' => $customer
-        ]);
+        return redirect()->route('#')->with('success', 'Customer updated successfully.');
     }
-
 
     /**
      * Remove the specified resource from storage.
