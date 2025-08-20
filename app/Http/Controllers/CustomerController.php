@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Customer;
 use Illuminate\Http\Request;
+use Inertia\Inertia;
 
 class CustomerController extends Controller
 {
@@ -14,7 +15,7 @@ class CustomerController extends Controller
     {
         //
         $customers = Customer::all();
-        return view('#', compact('customers'));
+        return Inertia::render('#', compact('customers'));
     }
 
     /**
@@ -23,7 +24,7 @@ class CustomerController extends Controller
     public function create()
     {
         //
-        return view('#');
+        return Inertia::render('#');
     }
 
     /**
@@ -53,7 +54,7 @@ class CustomerController extends Controller
      */
     public function show(Customer $customer)
     {
-        return view('#', compact('customer'));
+        return Inertia::render('#', compact('customer'));
     }
 
 
