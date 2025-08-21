@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Customer;
 use Illuminate\Http\Request;
+use Inertia\Inertia;
 
 class CustomerController extends Controller
 {
@@ -14,7 +15,7 @@ class CustomerController extends Controller
     {
         //
         $customers = Customer::all();
-        return view('#', compact('customers'));
+        return Inertia::render('customers', compact('customers'));
     }
 
     /**
@@ -46,7 +47,7 @@ class CustomerController extends Controller
 
         Customer::create($validated);
 
-        return redirect()->route('#')->with('success', 'Customer created successfully.');
+        return redirect()->route('customers.index')->with('success', 'Customer created successfully.');
     }
     /**
      * Display the specified resource.
