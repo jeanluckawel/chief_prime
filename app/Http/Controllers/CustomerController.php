@@ -14,8 +14,9 @@ class CustomerController extends Controller
     public function index()
     {
         //
-        $customers = Customer::all();
-        return Inertia::render('#', compact('customers'));
+        $customers = Customer::orderBy('created_at', 'desc')->paginate(10)->toArray();
+        logger($customers);
+        return Inertia::render('customers', compact('customers'));
     }
 
     /**
@@ -47,7 +48,7 @@ class CustomerController extends Controller
 
         Customer::create($validated);
 
-        return redirect()->route('#')->with('success', 'Customer created successfully.');
+        return redirect()->route('customers.index')->with('success', 'Customer created successfully.');
     }
     /**
      * Display the specified resource.
