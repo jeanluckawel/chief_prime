@@ -14,7 +14,7 @@ class CustomerController extends Controller
     public function index()
     {
         //
-        $customers = Customer::all();
+        $customers = Customer::orderBy('created_at', 'desc')->paginate(10);
         return Inertia::render('customers', compact('customers'));
     }
 
@@ -24,7 +24,7 @@ class CustomerController extends Controller
     public function create()
     {
         //
-        return view('#');
+        return Inertia::render('#');
     }
 
     /**
@@ -54,7 +54,7 @@ class CustomerController extends Controller
      */
     public function show(Customer $customer)
     {
-        return view('#', compact('customer'));
+        return Inertia::render('#', compact('customer'));
     }
 
 
