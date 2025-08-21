@@ -14,7 +14,8 @@ class CustomerController extends Controller
     public function index()
     {
         //
-        $customers = Customer::orderBy('created_at', 'desc')->paginate(10);
+        $customers = Customer::orderBy('created_at', 'desc')->paginate(10)->toArray();
+        logger($customers);
         return Inertia::render('customers', compact('customers'));
     }
 

@@ -4,8 +4,8 @@ import { Head } from '@inertiajs/react';
 import Heading from '@/components/heading';
 import { DataTable } from '@/components/data-table';
 import { column } from '@/components/customers/column';
-import { Customer } from '@/types/domain';
 import CreateCustomer from '@/components/customers/buttons/create';
+import { Customer } from '@/types/domain';
 
 const breadcrumbs: BreadcrumbItem[] = [
     {
@@ -14,11 +14,7 @@ const breadcrumbs: BreadcrumbItem[] = [
     },
 ];
 
-export default function Customers({
-    customers
-}: {
-    customers: Customer[];
-}) {
+export default function Customers({ customers }: { customers: { data: Customer[], [key: string]: unknown } }) {
     const columnVisibility = {
         address: false,
         city: false,
@@ -27,23 +23,23 @@ export default function Customers({
         country: false,
         created_at: false,
         updated_at: false,
-    }
+    };
 
-    console.log("Customer log from frontend");
+    console.log('Customer log from frontend');
     console.log(customers);
     return (
         <AppLayout breadcrumbs={breadcrumbs}>
             <Head title="Dashboard" />
 
-            <div className="flex h-full flex-1 flex-col gap-4 rounded-xl p-4 overflow-x-auto">
+            <div className="flex h-full flex-1 flex-col gap-4 overflow-x-auto rounded-xl p-4">
                 <Heading title="Customers" description="Manage your customers" />
 
                 <div className="">
                     <DataTable
-                        data={customers}
+                        data={customers?.data}
                         columns={column}
                         initialColumnVisibility={columnVisibility}
-                        createTrigger={<CreateCustomer/>}
+                        createTrigger={<CreateCustomer />}
                     />
                 </div>
             </div>
