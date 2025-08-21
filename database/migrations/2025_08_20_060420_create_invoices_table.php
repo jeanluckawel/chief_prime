@@ -16,6 +16,7 @@ return new class extends Migration
 
             $table->foreignId('user_id')->constrained('users')->onDelete('cascade');
             $table->foreignId('customer_id')->constrained('customers')->onDelete('cascade');
+            $table->enum('type', ['invoice', 'quotation'])->default('invoice');
 
             $table->string('invoice_number')->unique();
             $table->date('invoice_date');

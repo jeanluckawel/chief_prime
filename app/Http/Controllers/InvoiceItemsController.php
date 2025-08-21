@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Invoice_Items;
+use App\Models\InvoiceItems;
 use Illuminate\Http\Request;
 
 class InvoiceItemsController extends Controller
@@ -29,6 +30,26 @@ class InvoiceItemsController extends Controller
     public function store(Request $request)
     {
         //
+        $validated = $request->validate([
+            'invoice_id' => 'required|exists:invoices,id',
+            'description' => 'required|string|max:255',
+            'quantity' => 'required|numeric|min:1',
+            'unit_price' => 'required|numeric|min:0',
+            'total_price' => 'required|numeric|min:0',
+        ]);
+
+        foreach ($validated['quantity'] as $key => $value) {
+            InvoiceItems::create([
+                'invoice_id' => $validated['invoice_id'],
+                'description' => $validated['description'][$key],
+                'quantity' => $value,
+                'unit_price' => $validated['unit_price'][$key],
+                'total_price' => $validated['total_price'][$key],
+            ]);
+        }
+
+        return redirect()->route('#', $validated['invoice_id'])
+            ->with('success', 'Invoice items created successfully.');
     }
 
     /**
