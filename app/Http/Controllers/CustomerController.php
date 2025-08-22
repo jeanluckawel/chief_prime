@@ -25,7 +25,7 @@ class CustomerController extends Controller
     public function create()
     {
         //
-        return Inertia::render('#');
+        return Inertia::render('customers');
     }
 
     /**
