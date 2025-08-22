@@ -2,12 +2,10 @@
 
 namespace Database\Seeders;
 
-use App\Models\Customer;
-use App\Models\InvoiceItems;
 use App\Models\Invoices;
-use App\Models\User;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
+use Illuminate\Support\Carbon;
 
 class InvoiceSeeder extends Seeder
 {
@@ -16,50 +14,44 @@ class InvoiceSeeder extends Seeder
      */
     public function run(): void
     {
-        $users = User::all();
-        $customers = Customer::all();
+        //
 
-        foreach (range(1, 5) as $i) {
-            $invoice = Invoices::create([
-                'user_id' => $users->random()->id,
-                'customer_id' => $customers->random()->id,
-                'invoice_number' => 'INV-'.str_pad($i, 5, '0', STR_PAD_LEFT),
-                'invoice_date' => now()->subDays(rand(0, 30)),
-                'due_date' => now()->addDays(rand(5, 20)),
-                'payment_method' => ['cash','bank transfer','mobile money'][array_rand(['cash','bank transfer','mobile money'])],
-                'subtotal' => 0,
-                'tax' => 0,
-                'discount' => rand(0, 50),
-                'total' => 0,
-                'status' => ['draft','sent','paid','cancelled'][rand(0,3)],
-            ]);
 
-            $subtotal = 0;
-            $tax = 0;
+        for ($i = 1; $i <= 5; $i++) {
+            $type = $i % 2 === 0 ? 'quotation' : 'invoice';
 
-            foreach (range(1, rand(2, 5)) as $j) {
-                $qty = rand(1, 5);
-                $unitPrice = rand(50, 500);
-                $taxRate = [0,5,10,16][rand(0,3)];
-                $lineTotal = $qty * $unitPrice * (1 + $taxRate / 100);
 
-                InvoiceItems::create([
-                    'invoice_id' => $invoice->id,
-                    'description' => "Product $j for invoice {$invoice->invoice_number}",
-                    'quantity' => $qty,
-                    'unit_price' => $unitPrice,
-                    'tax_rate' => $taxRate,
-                    'total' => $lineTotal,
-                ]);
-
-                $subtotal += $qty * $unitPrice;
-                $tax += $qty * $unitPrice * ($taxRate / 100);
+            if ($type === 'invoice') {
+                $prefix = 'CPE_IVC';
+            } else {
+                $prefix = 'CPE_QT';
             }
 
-            $invoice->update([
+            $year = date('Y');
+            $number = str_pad($i, 3, '0', STR_PAD_LEFT);
+
+            $invoiceNumber = $prefix . '_' . $year . '_' . $number;
+
+
+            $subtotal = 1000 * $i;
+            $tax = $subtotal * 0.16;
+            $discount = 10;
+            $discountAmount = $subtotal * ($discount / 100);
+            $total = $subtotal + $tax - $discountAmount;
+
+            Invoices::create([
+                'user_id' => 1,
+                'customer_id' => 1,
+                'type' => $type,
+                'invoice_number' => $invoiceNumber,
+                'invoice_date' => Carbon::now(),
+                'due_date' => Carbon::now()->addDays(30),
+                'payment_method' => 'cash',
                 'subtotal' => $subtotal,
                 'tax' => $tax,
-                'total' => $subtotal + $tax - $invoice->discount,
+                'discount' => $discount,
+                'total' => $total,
+                'status' => 'draft',
             ]);
         }
     }
