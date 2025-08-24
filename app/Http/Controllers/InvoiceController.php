@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\StoreInvoiceRequest;
 use App\Models\Invoice;
 use App\Models\Invoices;
 use Illuminate\Http\Request;
@@ -16,6 +17,12 @@ class InvoiceController extends Controller
     public function index()
     {
         //
+        $invoices = Invoices::with('customer')
+            ->orderBy('created_at', 'desc')
+            ->paginate(10)
+            ->toArray();
+
+        return Inertia::render('invoices/Index', compact('invoices'));
     }
 
     /**
@@ -25,77 +32,65 @@ class InvoiceController extends Controller
     {
         //
 
-        return Inertia::render('#');
+        return Inertia::render('invoices/Create');
     }
 
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request)
+    public function store(StoreInvoiceRequest $request)
     {
-        $validated = $request->validate([
-            'customer_id' => 'required|exists:customers,id',
-            'type' => 'required|in:invoice,quotation',
-            'invoice_date' => 'required|date',
-            'due_date' => 'nullable|date|after_or_equal:invoice_date',
-            'payment_method' => 'nullable|in:cash,bank transfer,mobile money',
-            'subtotal' => 'required|numeric|min:0',
-            'discount' => 'nullable|numeric|min:0|max:100',
-            'status' => 'nullable|in:draft,sent,paid,cancelled',
-        ]);
 
+        $validated = $request->validated();
 
         $year = now()->format('Y');
-
-
-        if ($validated['type'] === 'invoice') {
-            $prefix = "CPE_IVC";
-        } else {
-            $prefix = "CPE_QT";
-        }
+        $prefix = $validated['type'] === 'invoice' ? 'CPE_IVC' : 'CPE_QT';
 
         $lastInvoice = Invoices::where('type', $validated['type'])
             ->whereYear('created_at', $year)
-            ->orderBy('id', 'desc')
+            ->orderBy('id','desc')
             ->first();
 
+        $lastNumber = $lastInvoice ? intval(Str::afterLast($lastInvoice->invoice_number,'-')) : 0;
+        $invoiceNumber = $prefix.$year.'-'.str_pad($lastNumber+1,3,'0',STR_PAD_LEFT);
 
-        if ($lastInvoice) {
-            $lastNumber = intval(Str::afterLast($lastInvoice->invoice_number, '-'));
-        } else {
-            $lastNumber = 0;
+        $subtotal = 0;
+        $itemsData = [];
+        foreach ($validated['quantity'] as $key => $qty) {
+            $lineTotal = $qty * $validated['unit_price'][$key];
+            $subtotal += $lineTotal;
+            $itemsData[] = [
+                'description' => $validated['description'][$key],
+                'quantity'    => $qty,
+                'unit_price'  => $validated['unit_price'][$key],
+                'tax_rate'    => $validated['tax_rate'][$key] ?? 0,
+                'total'       => $lineTotal,
+            ];
         }
 
-        $newNumber = str_pad($lastNumber + 1, 3, '0', STR_PAD_LEFT);
-
-
-        $invoiceNumber = $prefix . $year . '-' . $newNumber;
-
-
-        $tax = $validated['subtotal'] * 0.16;
-
-        $discountPercent = $validated['discount'] ?? 0;
-        $discountAmount = ($validated['subtotal'] + $tax) * ($discountPercent / 100);
-
-        $total = ($validated['subtotal'] + $tax) - $discountAmount;
+        $tax = $subtotal * 0.16;
+        $discountAmount = ($subtotal + $tax) * (($validated['discount'] ?? 0)/100);
+        $total = ($subtotal + $tax) - $discountAmount;
 
         $invoice = Invoices::create([
-            'user_id' => auth()->id(),
-            'customer_id' => $validated['customer_id'],
-            'type' => $validated['type'],
+            'user_id'        => auth()->id(),
+            'customer_id'    => $validated['customer_id'],
+            'type'           => $validated['type'],
             'invoice_number' => $invoiceNumber,
-            'invoice_date' => $validated['invoice_date'],
-            'due_date' => $validated['due_date'],
+            'invoice_date'   => $validated['invoice_date'],
+            'due_date'       => $validated['due_date'],
             'payment_method' => $validated['payment_method'],
-            'subtotal' => $validated['subtotal'],
-            'tax' => $tax,
-            'discount' => $discountPercent,
-            'total' => $total,
-            'status' => $validated['status'] ?? 'draft',
+            'subtotal'       => $subtotal,
+            'tax'            => $tax,
+            'discount'       => $validated['discount'] ?? 0,
+            'total'          => $total,
+            'status'         => $validated['status'] ?? 'draft',
         ]);
 
-        return redirect()->route('#', $invoice->id)
-            ->with('success', 'Invoice created successfully.');
+        $invoice->items()->createMany($itemsData);
+
+        return redirect()->route('#',$invoice->id)
+            ->with('success','Invoice created successfully with items.');
     }
 
 
