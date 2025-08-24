@@ -23,7 +23,6 @@ import { DataTablePagination } from '@/components/data-table-pagination';
 import React, { JSX, useState } from 'react';
 import { DataTableViewOptions } from '@/components/column-toggle';
 import { Input } from '@/components/ui/input';
-import CreateCustomer from '@/components/customers/buttons/create';
 
 interface DataTableProps<TData, TValue> {
     columns: ColumnDef<TData, TValue>[]
@@ -82,9 +81,7 @@ export function DataTable<TData, TValue>({
                 <div className="flex items-center justify-end gap-2">
                     <DataTableViewOptions table={table} />
                     {
-                        createTrigger && (
-                            <CreateCustomer/>
-                        )
+                        createTrigger && createTrigger
                     }
                 </div>
             </div>
