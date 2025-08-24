@@ -10,6 +10,7 @@ class Invoices extends Model
     //
     protected $fillable = [
         'user_id', 'customer_id', 'invoice_number', 'invoice_date', 'due_date', 'payment_method', 'subtotal', 'tax', 'discount', 'total', 'status',
+        'type',
     ];
 
     public function customer()
@@ -24,6 +25,6 @@ class Invoices extends Model
 
     public function items()
     {
-        return $this->hasMany(InvoiceItems::class);
+        return $this->hasMany(InvoiceItems::class, 'invoice_id');
     }
 }
