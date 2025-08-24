@@ -122,7 +122,9 @@ export default function Invoice() {
       </div>
 
       <p className="mt-6 text-center text-xs italic text-gray-500">
+
         Thanks
+
       </p>
     </div>
   );

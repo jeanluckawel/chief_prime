@@ -30,5 +30,6 @@ Route::get('/invoices/create', [InvoiceController::class, 'create'])->name('invo
 Route::post('/invoices', [InvoiceController::class, 'store'])->name('invoices.store');
 
 
+
 require __DIR__.'/settings.php';
 require __DIR__.'/auth.php';

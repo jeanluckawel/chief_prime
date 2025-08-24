@@ -19,7 +19,6 @@ return new class extends Migration
             $table->string('description');
             $table->integer('quantity');
             $table->decimal('unit_price', 15, 2);
-            $table->decimal('tax_rate', 5, 2);
             $table->decimal('total', 15, 2);
 
             $table->timestamps();

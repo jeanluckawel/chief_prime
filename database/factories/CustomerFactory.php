@@ -3,7 +3,9 @@
 namespace Database\Factories;
 
 use App\Models\Customer;
+use App\Models\Invoices;
 use Illuminate\Database\Eloquent\Factories\Factory;
+use Illuminate\Foundation\Auth\User;
 
 /**
  * @extends Factory<Customer>
@@ -17,17 +19,20 @@ class CustomerFactory extends Factory
      */
     public function definition(): array
     {
+
+
+
         return [
             'type' => $this->faker->randomElement(['individual', 'enterprise']),
-            'name' => $this->faker->company(),
+            'name' => $this->faker->name(),
             'email' => $this->faker->unique()->safeEmail(),
             'phone' => $this->faker->phoneNumber(),
             'address' => $this->faker->address(),
             'country' => $this->faker->country(),
             'city' => $this->faker->city(),
-            'nif' => $this->faker->numerify('NIF-#####'),
-            'rccm' => $this->faker->numerify('RCCM-#####'),
-            'idnat' => $this->faker->numerify('IDNAT-#####'),
+            'nif' => strtoupper($this->faker->bothify('??######')),
+            'rccm' => strtoupper($this->faker->bothify('??######')),
+            'idnat' => strtoupper($this->faker->bothify('??######')),
         ];
     }
 }
