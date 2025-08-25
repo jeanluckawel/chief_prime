@@ -13,3 +13,23 @@ export interface Customer {
     created_at: string; // ISO date string
     updated_at: string; // ISO date string
 }
+
+export interface InvoiceRequest {
+    customer_id: number
+    type: string
+    invoice_number: string
+    invoice_date: Date
+    due_date: Date
+    payment_method: string
+    tax: number
+    discount: number
+    subtotal: number
+    total: number
+    items: {
+        description: string
+        quantity: number
+        unit_price: number
+        tax_rate: number
+        total: number
+    }[]
+}
