@@ -1,6 +1,8 @@
 import AppLayout from '@/layouts/app-layout';
 import { type BreadcrumbItem } from '@/types';
-import { Head } from '@inertiajs/react';
+import { Head,
+    router
+} from '@inertiajs/react';
 import Heading from '@/components/heading';
 import { DataTable } from '@/components/data-table';
 import { Invoice, invoiceColumns } from '@/components/invoices/column';
@@ -26,6 +28,10 @@ export default function Index({ invoices }: { invoices: { data: Invoice[], [key:
 
     console.log('Customer log from frontend');
     console.log(invoices);
+
+    const onRowClick = (invoice: Invoice) => {
+        router.visit(route("invoices.show", invoice))
+    }
     return (
         <AppLayout breadcrumbs={breadcrumbs}>
             <Head title="Dashboard" />
@@ -39,6 +45,8 @@ export default function Index({ invoices }: { invoices: { data: Invoice[], [key:
                         columns={invoiceColumns}
                         initialColumnVisibility={columnVisibility}
                         createTrigger={<CreateInvoiceButton />}
+                        rowClassName="hover:cursor-pointer"
+                        onRowClick={onRowClick}
                     />
                 </div>
             </div>
