@@ -23,12 +23,15 @@ import { DataTablePagination } from '@/components/data-table-pagination';
 import React, { JSX, useState } from 'react';
 import { DataTableViewOptions } from '@/components/column-toggle';
 import { Input } from '@/components/ui/input';
+import { clsx } from 'clsx';
 
 interface DataTableProps<TData, TValue> {
     columns: ColumnDef<TData, TValue>[]
     data: TData[]
     initialColumnVisibility?: VisibilityState
     createTrigger?: JSX.Element
+    onRowClick?: (row: TData) => void
+    rowClassName?:  React.HTMLAttributes<HTMLTableRowElement>['className']
 }
 
 export function DataTable<TData, TValue>({
@@ -36,6 +39,8 @@ export function DataTable<TData, TValue>({
     data,
     initialColumnVisibility = {},
     createTrigger,
+    onRowClick = () => {},
+    rowClassName,
 }: DataTableProps<TData, TValue>) {
     const [columnVisibility, setColumnVisibility] = useState(initialColumnVisibility)
     const [sorting, setSorting] = React.useState<SortingState>([])
@@ -111,6 +116,8 @@ export function DataTable<TData, TValue>({
                                 <TableRow
                                     key={row.id}
                                     data-state={row.getIsSelected() && "selected"}
+                                    onClick={() => onRowClick(row.original)}
+                                    className={clsx(rowClassName)}
                                 >
                                     {row.getVisibleCells().map((cell) => (
                                         <TableCell key={cell.id}>
