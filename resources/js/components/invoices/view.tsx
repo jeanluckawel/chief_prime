@@ -1,33 +1,15 @@
-import React from "react";
-import {
-    Customer,
-    InvoiceRequest } from '@/types/domain';
+import { Invoice } from '@/components/invoices/column';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
+import React from 'react';
+import { formatMoney } from '@/components/invoices/index';
 
-export function formatMoney(n: number) {
-    return new Intl.NumberFormat(
-        'en-US',
-        {
-            style: "currency",
-            currency: "USD",
-            minimumFractionDigits: 2,
-            maximumFractionDigits: 2
-        }
-    ).format(n);
-}
-
-export default function InvoiceViewComponent({
-    invoice,
-    customers,
+export default function ViewInvoice({
+    invoice
 }: {
-    invoice: InvoiceRequest
-    customers: Customer[]
+    invoice: Invoice
 }) {
-    console.log(customers);
-    const customer = invoice.customer_id ? customers.find(it => it.id === invoice.customer_id): null
-
     return (
-        <div className="mx-auto max-w-4xl space-y-6 p-8 bg-background shadow-sm text-[13px] leading-relaxed print:shadow-none print:p-0">
+        <div className="mx-auto max-w-5xl space-y-6 p-8 bg-background shadow-sm text-[13px] leading-relaxed print:shadow-none print:p-0">
             <div className="flex items-start justify-between">
                 <div className="flex flex-col space-y-2">
                     <div className="flex items-center gap-4">
@@ -71,12 +53,12 @@ export default function InvoiceViewComponent({
                 <div className="space-y-2">
                     <h2 className="text-sm font-semibold uppercase text-muted-foreground">Bill To</h2>
                     {
-                        customer && (
+                        invoice.customer && (
                             <div className="text-xs">
-                                <p className="font-semibold text-sm">{customer?.name}</p>
-                                <p>{customer?.email}</p>
-                                <p>{customer?.phone}</p>
-                                <p>{customer?.address}</p>
+                                <p className="font-semibold text-sm">{invoice.customer?.name}</p>
+                                <p>{invoice.customer?.email}</p>
+                                <p>{invoice.customer?.phone}</p>
+                                <p>{invoice.customer?.address}</p>
                             </div>
                         )
                     }
@@ -87,12 +69,12 @@ export default function InvoiceViewComponent({
             <div className="mb-6 overflow-x-auto rounded border">
                 <Table className="min-w-full border-collapse">
                     <TableHeader className="">
-                    <TableRow>
-                        <TableHead className="border-b p-2 text-xs text-muted-foreground text-left font-semibold w-full">Description</TableHead>
-                        <TableHead className="border-b p-2 text-xs text-muted-foreground text-right font-semibold">Qty</TableHead>
-                        <TableHead className="border-b p-2 text-xs text-muted-foreground text-right font-semibold">Unit</TableHead>
-                        <TableHead className="border-b p-2 text-xs text-muted-foreground text-right font-semibold">Total</TableHead>
-                    </TableRow>
+                        <TableRow>
+                            <TableHead className="border-b p-2 text-xs text-muted-foreground text-left font-semibold w-full">Description</TableHead>
+                            <TableHead className="border-b p-2 text-xs text-muted-foreground text-right font-semibold">Qty</TableHead>
+                            <TableHead className="border-b p-2 text-xs text-muted-foreground text-right font-semibold">Unit</TableHead>
+                            <TableHead className="border-b p-2 text-xs text-muted-foreground text-right font-semibold">Total</TableHead>
+                        </TableRow>
                     </TableHeader>
                     <TableBody>
                         {

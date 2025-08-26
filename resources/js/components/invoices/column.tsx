@@ -1,4 +1,5 @@
 import { ColumnDef } from "@tanstack/react-table"
+import { Customer } from '@/types/domain';
 
 export type Invoice = {
     id: number
@@ -6,17 +7,21 @@ export type Invoice = {
     type: "invoice" | "quotation"
     invoice_date: string
     due_date: string | null
-    customer: {
-        id: number
-        name: string
-        email: string
-    }
+    customer_id: number
+    customer: Customer
     payment_method: "cash" | "bank transfer" | "mobile money" | null
     subtotal: number
     tax: number
     discount: number
     total: number
     status: "draft" | "sent" | "paid" | "cancelled"
+    items: {
+        id: number
+        description: string
+        quantity: number
+        unit_price: number
+        tax_rate: number
+    }[]
 }
 
 export const invoiceColumns: ColumnDef<Invoice>[] = [
