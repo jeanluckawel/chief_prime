@@ -10,6 +10,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
 use Inertia\Inertia;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 class InvoiceController extends Controller
 {
@@ -134,7 +135,8 @@ class InvoiceController extends Controller
      */
     public function show(Invoices $invoice)
     {
-        //
+        $invoice->load('customer', 'items');
+        return Inertia::render('invoices/show', compact('invoice'));
     }
 
     /**
