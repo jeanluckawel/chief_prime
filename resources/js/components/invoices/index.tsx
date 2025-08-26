@@ -4,7 +4,7 @@ import {
     InvoiceRequest } from '@/types/domain';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 
-function money(n: number) {
+export function formatMoney(n: number) {
     return new Intl.NumberFormat(
         'en-US',
         {
@@ -100,8 +100,8 @@ export default function InvoiceViewComponent({
                                 <TableRow key={index} className="even:bg-muted/50">
                                     <TableCell className="border-b p-2">{item.description}</TableCell>
                                     <TableCell className="border-b p-2 text-right text-nowrap">{item.quantity}</TableCell>
-                                    <TableCell className="border-b p-2 text-right text-nowrap">{money(item.unit_price)}</TableCell>
-                                    <td className="border-b p-2 text-right text-nowrap">{money(item.quantity * item.unit_price)}</td>
+                                    <TableCell className="border-b p-2 text-right text-nowrap">{formatMoney(item.unit_price)}</TableCell>
+                                    <td className="border-b p-2 text-right text-nowrap">{formatMoney(item.quantity * item.unit_price)}</td>
                                 </TableRow>
                             ))
                         }
@@ -111,10 +111,10 @@ export default function InvoiceViewComponent({
 
             <div className="flex justify-end">
                 <div className="min-w-fit w-50 max-w-xs space-y-1">
-                    <div className="flex justify-between"><span>Subtotal</span><span>{money(invoice.subtotal)}</span></div>
-                    <div className="flex justify-between"><span>Tax {invoice.tax}%</span><span>{money(invoice.subtotal * invoice.tax / 100)}</span></div>
+                    <div className="flex justify-between"><span>Subtotal</span><span>{formatMoney(invoice.subtotal)}</span></div>
+                    <div className="flex justify-between"><span>Tax {invoice.tax}%</span><span>{formatMoney(invoice.subtotal * invoice.tax / 100)}</span></div>
                     <div className="mt-1 border-t pt-1 font-semibold">
-                        <div className="flex justify-between"><span>Total</span><span>{money(invoice.total)}</span></div>
+                        <div className="flex justify-between"><span>Total</span><span>{formatMoney(invoice.total)}</span></div>
                     </div>
                 </div>
             </div>
