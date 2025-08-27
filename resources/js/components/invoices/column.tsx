@@ -1,5 +1,9 @@
 import { ColumnDef } from "@tanstack/react-table"
 import { Customer } from '@/types/domain';
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
+import { MoreHorizontal } from 'lucide-react';
+import { Button } from 'react-day-picker';
+
 
 export type Invoice = {
     id: number
@@ -92,4 +96,41 @@ export const invoiceColumns: ColumnDef<Invoice>[] = [
             )
         },
     },
+
+    {
+        id: "actions",
+        header: "Actions",
+        cell: ({ row }) => {
+            const invoiceId = row.original.id
+
+            return (
+                <div>
+                    <DropdownMenu>
+                        <DropdownMenuTrigger asChild>
+                            <Button>
+                                <MoreHorizontal className="h-4 w-4" />
+                            </Button>
+                        </DropdownMenuTrigger>
+                        <DropdownMenuContent align="end">
+                            <DropdownMenuItem asChild>
+                                <a href={`/invoices/${invoiceId}`} className="w-full">
+                                    View
+                                </a>
+                            </DropdownMenuItem>
+                            <DropdownMenuItem asChild>
+                                <a href="" className="w-full">
+                                    All Invoice
+                                </a>
+                            </DropdownMenuItem>
+                            <DropdownMenuItem asChild>
+                                <a href="" className="w-full">
+                                    Create
+                                </a>
+                            </DropdownMenuItem>
+                        </DropdownMenuContent>
+                    </DropdownMenu>
+                </div>
+            )
+        },
+    }
 ]
