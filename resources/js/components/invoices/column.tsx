@@ -1,8 +1,10 @@
 import { ColumnDef } from "@tanstack/react-table"
 import { Customer } from '@/types/domain';
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
-import { MoreHorizontal } from 'lucide-react';
 import { Button } from 'react-day-picker';
+import { FileDown, MoreHorizontal } from 'lucide-react';
+import { Link } from '@inertiajs/react';
+import { Fragment } from 'react';
 
 
 export type Invoice = {
@@ -96,12 +98,12 @@ export const invoiceColumns: ColumnDef<Invoice>[] = [
             )
         },
     },
-
     {
-        id: "actions",
+        accessorKey: "actions",
         header: "Actions",
         cell: ({ row }) => {
             const invoiceId = row.original.id
+            const customerId = row.original.customer_id
 
             return (
                 <div>
@@ -118,15 +120,29 @@ export const invoiceColumns: ColumnDef<Invoice>[] = [
                                 </a>
                             </DropdownMenuItem>
                             <DropdownMenuItem asChild>
-                                <a href="" className="w-full">
-                                    All Invoice
+                                <a href={route('customers.invoices', customerId )} className="w-full">
+                                    All invoices
                                 </a>
                             </DropdownMenuItem>
                             <DropdownMenuItem asChild>
-                                <a href="" className="w-full">
+                                <Link
+                                    href={route('invoices.store')}
+                                    className="flex items-center gap-2 w-full"
+                                >
                                     Create
+                                </Link>
+                            </DropdownMenuItem>
+
+                            <DropdownMenuItem asChild>
+                                <a
+                                    href={route('invoices.download', invoiceId)}
+                                    className="flex items-center gap-2 w-full"
+                                >
+                                    <FileDown className="h-4 w-4" />
+                                    Download
                                 </a>
                             </DropdownMenuItem>
+
                         </DropdownMenuContent>
                     </DropdownMenu>
                 </div>

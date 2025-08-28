@@ -30,7 +30,11 @@ Route::get('/invoices/create', [InvoiceController::class, 'create'])->name('invo
 Route::post('/invoices', [InvoiceController::class, 'store'])->name('invoices.store');
 Route::get('/invoices/{invoice}', [InvoiceController::class, 'show'])->name('invoices.show');
 
+Route::get('/customers/{customer}/invoices', [InvoiceController::class, 'invoicesByCustomer'])
+    ->name('customers.invoices');
 
+Route::get('/invoices/{invoice}/download', [InvoiceController::class, 'download'])
+    ->name('invoices.download');
 
 require __DIR__.'/settings.php';
 require __DIR__.'/auth.php';

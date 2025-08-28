@@ -32,7 +32,16 @@ export default function Customers({ customers }: { customers: { data: Customer[]
             <Head title="Dashboard" />
 
             <div className="flex h-full flex-1 flex-col gap-4 overflow-x-auto rounded-xl p-4">
-                <Heading title="Customers" description="Manage your customers" />
+                <Heading title="Customers" description="Manage your customers " />
+
+                <p>
+                    <a
+                        href="/invoices/create"
+                        className="text-blue-600 hover:underline"
+                    >
+                        Save Invoice
+                    </a>
+                </p>
 
                 <div className="">
                     <DataTable

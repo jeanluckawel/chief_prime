@@ -33,3 +33,4 @@ export interface InvoiceRequest {
         total: number
     }[]
 }
+export class Invoice {}
