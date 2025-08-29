@@ -162,4 +162,34 @@ class InvoiceController extends Controller
     {
         //
     }
+
+
+    public function invoicesByCustomer($customerId)
+    {
+        $customer = Customer::findOrFail($customerId);
+
+        $invoices = Invoices::where('customer_id', $customerId)
+            ->with('items', 'customer')
+            ->orderBy('created_at', 'desc')
+            ->paginate(10);
+
+        return Inertia::render('invoices/customer-index', [
+            'customer' => $customer,
+            'invoices' => $invoices,
+        ]);
+    }
+
+    public function download(Invoices $invoice)
+    {
+        $invoice->load('customer', 'items');
+
+        if (!$invoice) {
+            abort(404, "Invoice not found.");
+        }
+
+        // On renvoie une vue avec les données
+        return view('invoices.download', compact('invoice'));
+    }
+
+
 }
